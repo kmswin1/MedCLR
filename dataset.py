@@ -8,17 +8,6 @@ import matplotlib.pyplot as plt
 import glob, os
 import numpy as np
 
-train_transform = T.Compose([
-                    T.Resize((250,250)),
-                    T.RandomResizedCrop(224),
-                    T.RandomApply([
-                            T.ColorJitter(0.5, 0.5, 0.5)
-                            ], p=0.8),
-                    T.RandomGrayscale(p=0.2),
-                    T.ToTensor(),
-                    T.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
-    ])
-
 train_transform = T.Compose(
     [
         T.Resize((256,256)),      
