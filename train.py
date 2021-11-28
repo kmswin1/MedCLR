@@ -12,6 +12,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import glob, os
 import numpy as np
+from utils import EarlyStopping
 
 train_transform = T.Compose([
                     T.Resize((250,250)),
@@ -50,21 +51,70 @@ class Trainer:
 
         self.model = models.resnet18(pretrained=False, num_classes=out_dim)
         self.loss = nn.CrossEntropyLoss()
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
 
     def train(self, batch_data):
+        self.optimizer.zero_grad()
+        x_i, x_j, labels = batch_data
+        pred = self.model(x_i)
+        loss = self.loss(pred, labels)
+        loss.backward()
+        self.optimizer.step()
+        return loss.item()
 
 
     def test(self, batch_data):
+        with torch.no_grad():
+            x_i, x_j, labels = batch_data
+            pred = self.model(x_i)
+            loss = self.loss(pred, labels)
+            pred = torch.argmax(pred, dim=-1)
+            accuracy = torch.sum(torch.eq(pred, labels))
+            accuracy /= pred.size(0)
 
 
 if __name__ == '__main__':
     trainer = Trainer(4)
+    early_stopping = EarlyStopping()
     data_dir = "./data/"
     use_cuda = "cuda:0" if torch.cuda.is_available() else 'cpu'
     print(use_cuda)
+    optimal_accuracy = 0
 
     loader = Loader(data_dir, 128, train_transform, test_transform, use_cuda)
     train_loader = loader.train_loader
     test_loader = loader.test_loader
+    tot = 0
+    loss = 0
+    with open('log.txt', 'w') as f:
+        for i, batch_data in enumerate(train_loader):
+            loss += Trainer.train(batch_data)
+            tot += batch_data[0].size(0)
 
-    for i,
+        print ("train loss : " + str(loss))
+        f.write("train loss : " + str(loss) + '\n')
+
+        tot = 0
+        loss = 0
+        for i, batch_data in enumerate(test_loader):
+            valid_loss, accuracy = Trainer.test(batch_data)
+            loss += valid_loss
+            tot += batch_data[0].size(0)
+
+        print("valid loss : " + str(loss))
+        print("Accuracy : "+ str(accuracy))
+
+        f.write("valid loss : " + str(loss) + '\n')
+        f.write("Accuracy : " + str(accuracy) + '\n')
+
+
+
+
+        if accuracy > optimal_accuracy:
+            print ("model saved")
+            torch.save(trainer.model, 'model.pt')
+
+        if early_stopping(loss):
+            print ("early stopped ...")
+            if accuracy > optimal_accuracy:
+                torch.save(trainer.model, 'model.pt')
