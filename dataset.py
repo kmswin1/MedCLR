@@ -63,7 +63,7 @@ class MedDataset(Dataset):
       idx = idx.tolist()
 
     img_path = self.list_imgs[idx]
-    target = self.labels[idx]
+    target = torch.tensor(self.labels[idx], dtype=torch.float, device='cuda:0')
 
     img = Image.open(img_path)
     
