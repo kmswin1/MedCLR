@@ -56,6 +56,7 @@ class Trainer:
     def train(self, batch_data):
         self.optimizer.zero_grad()
         x, labels = batch_data
+        labels = torch.tensor(labels, dtype=torch.long, device='cuda:0')
         pred = self.model(x[0])
         loss = self.loss(pred, labels)
         loss.backward()
