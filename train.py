@@ -50,6 +50,7 @@ class Trainer:
     def __init__(self, out_dim):
 
         self.model = models.resnet18(pretrained=False, num_classes=out_dim)
+        self.model.to('cuda:0')
         self.loss = nn.CrossEntropyLoss()
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
 
