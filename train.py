@@ -92,34 +92,35 @@ if __name__ == '__main__':
     tot = 0
     loss = 0
     with open('log.txt', 'w') as f:
-        for i, batch_data in enumerate(train_loader):
-            loss += trainer.train(batch_data)
-            tot += batch_data[1].size(0)
+        for epoch in range(1, 100):
+            for i, batch_data in enumerate(train_loader):
+                loss += trainer.train(batch_data)
+                tot += batch_data[1].size(0)
 
-        print ("train loss : " + str(loss))
-        f.write("train loss : " + str(loss) + '\n')
+            print ("train loss : " + str(loss))
+            f.write("train loss : " + str(loss) + '\n')
 
-        tot = 0
-        loss = 0
-        for i, batch_data in enumerate(test_loader):
-            valid_loss, accuracy = trainer.test(batch_data)
-            loss += valid_loss
-            tot += batch_data[1].size(0)
+            tot = 0
+            loss = 0
+            for i, batch_data in enumerate(test_loader):
+                valid_loss, accuracy = trainer.test(batch_data)
+                loss += valid_loss
+                tot += batch_data[1].size(0)
 
-        print("valid loss : " + str(loss))
-        print("Accuracy : "+ str(accuracy))
+            print("valid loss : " + str(loss))
+            print("Accuracy : "+ str(accuracy))
 
-        f.write("valid loss : " + str(loss) + '\n')
-        f.write("Accuracy : " + str(accuracy) + '\n')
-
-
+            f.write("valid loss : " + str(loss) + '\n')
+            f.write("Accuracy : " + str(accuracy) + '\n')
 
 
-        if accuracy > optimal_accuracy:
-            print ("model saved")
-            torch.save(trainer.model, 'model.pt')
 
-        if early_stopping(loss):
-            print ("early stopped ...")
+
             if accuracy > optimal_accuracy:
+                print ("model saved")
                 torch.save(trainer.model, 'model.pt')
+
+            if early_stopping(loss):
+                print ("early stopped ...")
+                if accuracy > optimal_accuracy:
+                    torch.save(trainer.model, 'model.pt')
