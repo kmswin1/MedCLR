@@ -66,6 +66,7 @@ class Trainer:
     def test(self, batch_data):
         with torch.no_grad():
             x_i, x_j, labels = batch_data
+            labels = torch.tensor(labels, dtype=torch.int64, device='cuda:0')
             pred = self.model(x_i)
             loss = self.loss(pred, labels)
             pred = torch.argmax(pred, dim=-1)
