@@ -72,7 +72,7 @@ class Trainer:
             pred = self.model(x[0].to('cuda:0'))
             loss = self.loss(pred, labels)
             pred = torch.argmax(pred, dim=-1)
-            accuracy = torch.sum(torch.eq(pred, labels))
+            accuracy = float(torch.sum(torch.eq(pred, labels)).item())
             accuracy /= float(labels.size()[0])
 
             return loss, accuracy
