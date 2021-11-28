@@ -37,12 +37,13 @@ class MedDataset(Dataset):
     all_labels = []
 
     for img_file in self.list_imgs:
-      if "test" in img_file:
-        label = img_file[22]
-      else:
-        label = img_file[23]
-      
-      all_labels.append(label)
+        label = float(img_file.split('/')[-1].split('_')[0])
+      #if "test" in img_file:
+      #  label = img_file[22]
+      #else:
+      #  label = img_file[23]
+
+        all_labels.append(label)
 
     return all_labels
 
