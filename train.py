@@ -89,7 +89,7 @@ if __name__ == '__main__':
     loss = 0
     with open('log.txt', 'w') as f:
         for i, batch_data in enumerate(train_loader):
-            loss += Trainer.train(batch_data)
+            loss += trainer.train(batch_data)
             tot += batch_data[0].size(0)
 
         print ("train loss : " + str(loss))
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         tot = 0
         loss = 0
         for i, batch_data in enumerate(test_loader):
-            valid_loss, accuracy = Trainer.test(batch_data)
+            valid_loss, accuracy = trainer.test(batch_data)
             loss += valid_loss
             tot += batch_data[0].size(0)
 
