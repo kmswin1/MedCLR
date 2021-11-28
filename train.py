@@ -58,7 +58,7 @@ class Trainer:
         self.optimizer.zero_grad()
         x, labels = batch_data
         labels = torch.tensor(labels, dtype=torch.int64, device='cuda:0')
-        pred = self.model(x[0])
+        pred = self.model(x[0].to('cuda:0'))
         loss = self.loss(pred, labels)
         loss.backward()
         self.optimizer.step()
@@ -69,7 +69,7 @@ class Trainer:
         with torch.no_grad():
             x, labels = batch_data
             labels = torch.tensor(labels, dtype=torch.int64, device='cuda:0')
-            pred = self.model(x[0])
+            pred = self.model(x[0].to('cuda:0'))
             loss = self.loss(pred, labels)
             pred = torch.argmax(pred, dim=-1)
             accuracy = torch.sum(torch.eq(pred, labels))
