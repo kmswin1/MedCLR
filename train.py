@@ -75,7 +75,7 @@ class Trainer:
             accuracy = float(torch.sum(torch.eq(pred, labels)).item())
             accuracy /= float(labels.size()[0])
 
-            return loss, accuracy
+            return loss.item(), accuracy
 
 
 if __name__ == '__main__':
@@ -89,10 +89,10 @@ if __name__ == '__main__':
     loader = Loader(data_dir, 128, train_transform, test_transform, use_cuda)
     train_loader = loader.train_loader
     test_loader = loader.test_loader
-    tot = 0
-    loss = 0
     with open('log.txt', 'w') as f:
         for epoch in range(1, 100):
+            tot = 0
+            loss = 0
             for i, batch_data in enumerate(train_loader):
                 loss += trainer.train(batch_data)
                 tot += batch_data[1].size(0)
