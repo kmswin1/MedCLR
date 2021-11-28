@@ -102,7 +102,7 @@ class Loader(object):
 
 def main():
 
-    data_dir = "./data/pre_train/"
+    data_dir = "./data/"
     use_cuda = "cuda:0" if torch.cuda.is_available() else 'cpu'
     print(use_cuda)
 
