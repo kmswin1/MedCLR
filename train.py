@@ -73,7 +73,7 @@ class Trainer:
             loss = self.loss(pred, labels)
             pred = torch.argmax(pred, dim=-1)
             accuracy = torch.sum(torch.eq(pred, labels))
-            accuracy /= pred.size(0)
+            accuracy /= float(pred.size(0)[0])
 
             return loss, accuracy
 
