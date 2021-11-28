@@ -117,6 +117,7 @@ if __name__ == '__main__':
 
 
             if accuracy > optimal_accuracy:
+                optimal_accuracy = accuracy
                 print ("model saved")
                 torch.save(trainer.model, 'model.pt')
 
