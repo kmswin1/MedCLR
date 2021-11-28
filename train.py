@@ -75,6 +75,8 @@ class Trainer:
             accuracy = torch.sum(torch.eq(pred, labels))
             accuracy /= pred.size(0)
 
+            return loss, accuracy
+
 
 if __name__ == '__main__':
     trainer = Trainer(4)
@@ -92,7 +94,7 @@ if __name__ == '__main__':
     with open('log.txt', 'w') as f:
         for i, batch_data in enumerate(train_loader):
             loss += trainer.train(batch_data)
-            tot += batch_data[0].size(0)
+            tot += batch_data[1].size(0)
 
         print ("train loss : " + str(loss))
         f.write("train loss : " + str(loss) + '\n')
@@ -102,7 +104,7 @@ if __name__ == '__main__':
         for i, batch_data in enumerate(test_loader):
             valid_loss, accuracy = trainer.test(batch_data)
             loss += valid_loss
-            tot += batch_data[0].size(0)
+            tot += batch_data[1].size(0)
 
         print("valid loss : " + str(loss))
         print("Accuracy : "+ str(accuracy))
