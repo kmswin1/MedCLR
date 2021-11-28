@@ -37,12 +37,13 @@ class MedDataset(Dataset):
     all_labels = []
 
     for img_file in self.list_imgs:
-      if "test" in img_file:
-        label = img_file[22]
-      else:
-        label = img_file[23]
-      
-      all_labels.append(label)
+        label = float(img_file.split('/')[-1].split('_')[0])
+      #if "test" in img_file:
+      #  label = img_file[22]
+      #else:
+      #  label = img_file[23]
+
+        all_labels.append(label)
 
     return all_labels
 
@@ -51,7 +52,7 @@ class MedDataset(Dataset):
     self.list_imgs = list_imgs
     # self.labels = np.asarray([-1]*len(self.list_imgs))  # if want idx value : np.asarray()  //여기서 레이블 수정후
     self.labels = self.read_data_set() # get label from img file
-    self. transform = transform
+    self.transform = transform
 
   def __len__(self):
     return len(self.list_imgs)
@@ -108,7 +109,7 @@ class Loader(object):
 
 def main():
 
-    data_dir = "./data/pre_train/"
+    data_dir = "./data/"
     use_cuda = "cuda:0" if torch.cuda.is_available() else 'cpu'
     print(use_cuda)
     batch_size = 1
