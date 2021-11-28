@@ -51,7 +51,7 @@ class MedDataset(Dataset):
     self.list_imgs = list_imgs
     # self.labels = np.asarray([-1]*len(self.list_imgs))  # if want idx value : np.asarray()  //여기서 레이블 수정후
     self.labels = self.read_data_set() # get label from img file
-    self. transform = transform
+    self.transform = transform
 
   def __len__(self):
     return len(self.list_imgs)
