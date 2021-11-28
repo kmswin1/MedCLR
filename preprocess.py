@@ -8,7 +8,7 @@ import glob
 
 def preprocess(target,p=0.6):
     
-    src_dir = "D:/dataset/simclr/{}".format(target)
+    src_dir = "data/project/MedCLR/{}".format(target)
     save_fine_dir = './data/fine_tuning/'
     save_pre_dir = './data/pre_train/'
 
