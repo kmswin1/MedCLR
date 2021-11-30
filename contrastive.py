@@ -101,7 +101,7 @@ class SimCLR(object):
                     self.optimizer.step()
 
                     train_loss = loss.item()
-                    tot += images[0].size()
+                    tot += loss.size(0)[0]
                 print("train loss : " + str(train_loss))
                 f.write('train_loss : ' + str(train_loss) + '\n')
                 if optim_loss > train_loss:
