@@ -107,7 +107,7 @@ class SimCLR(object):
                 if optim_loss > train_loss:
                     print ("model saved...")
                     optim_loss = train_loss
-                    torch.save(self.model.state_dict(), 'model.pt')
+                    torch.save(self.model.state_dict(), 'pretrained_model.pt')
 
 if __name__ == '__main__':
     trainer = SimCLR()

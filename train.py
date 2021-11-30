@@ -98,7 +98,7 @@ if __name__ == '__main__':
                 print ("model saved")
                 torch.save(trainer.model.state_dict(), 'model.pt')
 
-            if early_stopping(loss):
+            if early_stopping(-accuracy):
                 print ("early stopped ...")
                 if accuracy > optimal_accuracy:
                     torch.save(trainer.model.state_dict(), 'model.pt')
