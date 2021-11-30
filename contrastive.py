@@ -11,7 +11,6 @@ import torch
 import torch.nn.functional as F
 from torch.cuda.amp import GradScaler, autocast
 from tqdm import tqdm
-from utils import save_config_file, accuracy, save_checkpoint
 from model import ResNetSimCLR
 from utils import EarlyStopping
 from torchvision import transforms as T
