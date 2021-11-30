@@ -68,11 +68,14 @@ class MedDataset(Dataset):
     img = Image.open(img_path)
     
     if self.transform is not None:
-      xi = self.transform(img)
-      xj = self.transform(img)
-    # return xi, target ## return {xi,xj,self.labels[idx]}
-  
-    return (xi,xj),target
+        xi = self.transform(img)
+        xj = self.transform(img)
+
+        return (xi,xj),target
+
+    else:
+        return (img, img), target
+
 
 
 class Loader(object):
