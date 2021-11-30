@@ -52,12 +52,10 @@ torch.manual_seed(0)
 
 class SimCLR(object):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         self.temperature = 0.2
         self.model = ResNetSimCLR(4).to('cuda:0')
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
-        self.writer = SummaryWriter()
-        logging.basicConfig(filename=os.path.join(self.writer.log_dir, 'training.log'), level=logging.DEBUG)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.0003)
         self.criterion = torch.nn.CrossEntropyLoss().to('cuda:0')
 
     def info_nce_loss(self, features):
@@ -98,7 +96,7 @@ class SimCLR(object):
 
         for epoch_counter in range(100):
             for images, _ in tqdm(train_loader):
-                images = torch.cat(images, dim=0)
+                images, labels = torch.cat(images, dim=0)
 
                 images = images.to('cuda:0')
 
@@ -124,38 +122,7 @@ if __name__ == '__main__':
     train_loader = loader.train_loader
     test_loader = loader.test_loader
     with open('log.txt', 'w') as f:
-        for epoch in range(1, 100):
-            tot = 0
-            loss = 0
-            for i, batch_data in enumerate(train_loader):
-                loss += trainer.train(batch_data)
-                tot += batch_data[1].size(0)
-
-            print ("train loss : " + str(loss))
-            f.write("train loss : " + str(loss) + '\n')
-
-            #tot = 0
-            #loss = 0
-            #for i, batch_data in enumerate(test_loader):
-            #    valid_loss, accuracy = trainer.test(batch_data)
-            #    loss += valid_loss
-            #    tot += batch_data[1].size(0)
-
-            #print("valid loss : " + str(loss))
-            #print("Accuracy : "+ str(accuracy))
-
-            #f.write("valid loss : " + str(loss) + '\n')
-            #f.write("Accuracy : " + str(accuracy) + '\n')
-
-
-
-
-            #if accuracy > optimal_accuracy:
-            #    optimal_accuracy = accuracy
-            #    print ("model saved")
-            #    torch.save(trainer.model, 'model.pt')
-
-            if early_stopping(loss):
-                print ("early stopped ...")
-                if accuracy > optimal_accuracy:
-                    torch.save(trainer.model, 'model.pt')
+        tot = 0
+        loss = 0
+        trainer = SimCLR()
+        trainer.train(train_loader)
