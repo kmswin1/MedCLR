@@ -14,30 +14,6 @@ import glob, os
 import numpy as np
 from utils import EarlyStopping
 
-train_transform = T.Compose([
-                    T.Resize((250,250)),
-                    T.RandomResizedCrop(224),
-                    T.RandomApply([
-                            T.ColorJitter(0.5, 0.5, 0.5)
-                            ], p=0.8),
-                    T.RandomGrayscale(p=0.2),
-                    T.ToTensor(),
-                    T.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
-    ])
-
-train_transform = T.Compose(
-    [
-        T.Resize((256,256)),
-        T.RandomHorizontalFlip(),
-        T.RandomResizedCrop(size=224),
-        T.RandomApply([T.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, hue=0.1)], p=0.8),
-        T.RandomGrayscale(p=0.2),
-        T.GaussianBlur(kernel_size=9),
-        T.ToTensor(),
-        T.Normalize((0.5,), (0.5,)),
-    ]
-)
-
 test_transform = T.Compose(
     [
         T.Resize((256,256)),
@@ -47,9 +23,10 @@ test_transform = T.Compose(
 )
 
 class Trainer:
-    def __init__(self, out_dim):
-
+    def __init__(self, out_dim, pretrained=None):
         self.model = models.resnet18(pretrained=False, num_classes=out_dim)
+        if pretrained:
+            self.model.load_state_dict(torch.load('pretrained_model.pt'), strict=False)
         self.model.to('cuda:0')
         self.loss = nn.CrossEntropyLoss()
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
@@ -86,7 +63,7 @@ if __name__ == '__main__':
     print(use_cuda)
     optimal_accuracy = 0
 
-    loader = Loader(data_dir, 128, train_transform, test_transform, use_cuda)
+    loader = Loader(data_dir, 128, test_transform, test_transform, use_cuda)
     train_loader = loader.train_loader
     test_loader = loader.test_loader
     with open('log.txt', 'w') as f:
@@ -119,9 +96,9 @@ if __name__ == '__main__':
             if accuracy > optimal_accuracy:
                 optimal_accuracy = accuracy
                 print ("model saved")
-                torch.save(trainer.model, 'model.pt')
+                torch.save(trainer.model.state_dict(), 'model.pt')
 
             if early_stopping(loss):
                 print ("early stopped ...")
                 if accuracy > optimal_accuracy:
-                    torch.save(trainer.model, 'model.pt')
+                    torch.save(trainer.model.state_dict(), 'model.pt')
