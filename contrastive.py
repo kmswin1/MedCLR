@@ -47,9 +47,9 @@ class SimCLR(object):
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.0003)
         self.criterion = torch.nn.CrossEntropyLoss().to('cuda:0')
 
-    def info_nce_loss(self, features):
+    def info_nce_loss(self, features, batch_size):
 
-        labels = torch.cat([torch.arange(128) for i in range(2)], dim=0)
+        labels = torch.cat([torch.arange(batch_size) for i in range(2)], dim=0)
         labels = (labels.unsqueeze(0) == labels.unsqueeze(1)).float()
         labels = labels.to('cuda:0')
 
@@ -89,9 +89,9 @@ class SimCLR(object):
                 train_loss = 0
                 for images, _ in tqdm(train_loader):
                     images = torch.cat(images, dim=0).to('cuda:0')
-
+                    batch_size = int(len(images)/2)
                     features = self.model(images)
-                    logits, labels = self.info_nce_loss(features)
+                    logits, labels = self.info_nce_loss(features, batch_size)
                     loss = self.criterion(logits, labels)
 
                     self.optimizer.zero_grad()
@@ -101,13 +101,13 @@ class SimCLR(object):
                     self.optimizer.step()
 
                     train_loss = loss.item()
-                    tot += len(images)
+                    tot += batch_size
                 print("train loss : " + str(train_loss))
                 f.write('train_loss : ' + str(train_loss) + '\n')
                 if optim_loss > train_loss:
                     print ("model saved...")
                     optim_loss = train_loss
-                    torch.save(self.model.state_dict(), 'model.pt')
+                    torch.save(self.model.state_dict(), 'pretrained_model.pt')
 
 if __name__ == '__main__':
     trainer = SimCLR()
