@@ -14,20 +14,6 @@ import glob, os
 import numpy as np
 from utils import EarlyStopping
 
-
-train_transform = T.Compose(
-    [
-        T.Resize((256,256)),
-        T.RandomHorizontalFlip(),
-        T.RandomResizedCrop(size=224),
-        T.RandomApply([T.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5, hue=0.1)], p=0.8),
-        T.RandomGrayscale(p=0.2),
-        T.GaussianBlur(kernel_size=9),
-        T.ToTensor(),
-        T.Normalize((0.5,), (0.5,)),
-    ]
-)
-
 test_transform = T.Compose(
     [
         T.Resize((256,256)),
@@ -76,7 +62,7 @@ if __name__ == '__main__':
     print(use_cuda)
     optimal_accuracy = 0
 
-    loader = Loader(data_dir, 128, None, test_transform, use_cuda)
+    loader = Loader(data_dir, 128, test_transform, test_transform, use_cuda)
     train_loader = loader.train_loader
     test_loader = loader.test_loader
     with open('log.txt', 'w') as f:
