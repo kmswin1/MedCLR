@@ -10,7 +10,6 @@ from dataset import MedDataset, Loader
 import torch
 import torch.nn.functional as F
 from torch.cuda.amp import GradScaler, autocast
-from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 from utils import save_config_file, accuracy, save_checkpoint
 from model import ResNetSimCLR
