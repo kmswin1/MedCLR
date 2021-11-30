@@ -14,16 +14,6 @@ import glob, os
 import numpy as np
 from utils import EarlyStopping
 
-train_transform = T.Compose([
-                    T.Resize((250,250)),
-                    T.RandomResizedCrop(224),
-                    T.RandomApply([
-                            T.ColorJitter(0.5, 0.5, 0.5)
-                            ], p=0.8),
-                    T.RandomGrayscale(p=0.2),
-                    T.ToTensor(),
-                    T.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
-    ])
 
 train_transform = T.Compose(
     [
@@ -86,7 +76,7 @@ if __name__ == '__main__':
     print(use_cuda)
     optimal_accuracy = 0
 
-    loader = Loader(data_dir, 128, train_transform, test_transform, use_cuda)
+    loader = Loader(data_dir, 128, None, test_transform, use_cuda)
     train_loader = loader.train_loader
     test_loader = loader.test_loader
     with open('log.txt', 'w') as f:
@@ -119,9 +109,9 @@ if __name__ == '__main__':
             if accuracy > optimal_accuracy:
                 optimal_accuracy = accuracy
                 print ("model saved")
-                torch.save(trainer.model, 'model.pt')
+                torch.save(trainer.model.state_dict(), 'model.pt')
 
             if early_stopping(loss):
                 print ("early stopped ...")
                 if accuracy > optimal_accuracy:
-                    torch.save(trainer.model, 'model.pt')
+                    torch.save(trainer.model.state_dict(), 'model.pt')

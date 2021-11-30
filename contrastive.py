@@ -14,16 +14,6 @@ from tqdm import tqdm
 from model import ResNetSimCLR
 from torchvision import transforms as T
 
-train_transform = T.Compose([
-                    T.Resize((250,250)),
-                    T.RandomResizedCrop(224),
-                    T.RandomApply([
-                            T.ColorJitter(0.5, 0.5, 0.5)
-                            ], p=0.8),
-                    T.RandomGrayscale(p=0.2),
-                    T.ToTensor(),
-                    T.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
-    ])
 
 train_transform = T.Compose(
     [
@@ -106,6 +96,8 @@ class SimCLR(object):
                 loss.backward()
 
                 self.optimizer.step()
+
+                torch.save(self.model.state_dict(), 'model.pt')
 
 if __name__ == '__main__':
     trainer = SimCLR()
