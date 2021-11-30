@@ -82,8 +82,10 @@ class SimCLR(object):
 
         # save config file
         n_iter = 0
-
-        for epoch_counter in range(100):
+        optim_loss = 9999
+        for epoch_counter in range(100-):
+            tot=0
+            train_loss = 0
             for images, _ in tqdm(train_loader):
                 images = torch.cat(images, dim=0).to('cuda:0')
 
@@ -97,6 +99,12 @@ class SimCLR(object):
 
                 self.optimizer.step()
 
+                train_loss = loss.item()
+                tot += images[0].size()
+            print("train loss : " + str(train_loss))
+            if optim_loss > train_loss:
+                print ("model saved...")
+                optim_loss = train_loss
                 torch.save(self.model.state_dict(), 'model.pt')
 
 if __name__ == '__main__':
@@ -109,7 +117,6 @@ if __name__ == '__main__':
     loader = Loader(data_dir, 128, train_transform, test_transform, use_cuda)
     train_loader = loader.train_loader
     test_loader = loader.test_loader
-    with open('log.txt', 'w') as f:
-        tot = 0
-        loss = 0
-        trainer.train(train_loader)
+    tot = 0
+    loss = 0
+    trainer.train(train_loader)
