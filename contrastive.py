@@ -12,7 +12,6 @@ import torch.nn.functional as F
 from torch.cuda.amp import GradScaler, autocast
 from tqdm import tqdm
 from model import ResNetSimCLR
-from utils import EarlyStopping
 from torchvision import transforms as T
 
 train_transform = T.Compose([
@@ -111,8 +110,7 @@ class SimCLR(object):
                 self.optimizer.step()
 
 if __name__ == '__main__':
-    trainer = SimCLR(4)
-    early_stopping = EarlyStopping()
+    trainer = SimCLR()
     data_dir = "./data/"
     use_cuda = "cuda:0" if torch.cuda.is_available() else 'cpu'
     print(use_cuda)
@@ -124,5 +122,4 @@ if __name__ == '__main__':
     with open('log.txt', 'w') as f:
         tot = 0
         loss = 0
-        trainer = SimCLR()
         trainer.train(train_loader)
