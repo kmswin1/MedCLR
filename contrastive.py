@@ -89,7 +89,7 @@ class SimCLR(object):
                 train_loss = 0
                 for images, _ in tqdm(train_loader):
                     images = torch.cat(images, dim=0).to('cuda:0')
-                    batch_size = len(images)
+                    batch_size = int(len(images)/2)
                     features = self.model(images)
                     logits, labels = self.info_nce_loss(features, batch_size)
                     loss = self.criterion(logits, labels)
@@ -101,7 +101,7 @@ class SimCLR(object):
                     self.optimizer.step()
 
                     train_loss = loss.item()
-                    tot += len(images)
+                    tot += batch_size
                 print("train loss : " + str(train_loss))
                 f.write('train_loss : ' + str(train_loss) + '\n')
                 if optim_loss > train_loss:
