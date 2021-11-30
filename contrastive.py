@@ -84,7 +84,7 @@ class SimCLR(object):
         n_iter = 0
         optim_loss = 9999
         with open('pretrain_log.txt', 'w') as f:
-            for epoch_counter in range(1000):
+            for epoch_counter in range(100):
                 tot=0
                 train_loss = 0
                 for images, _ in tqdm(train_loader):
