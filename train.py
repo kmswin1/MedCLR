@@ -23,9 +23,10 @@ test_transform = T.Compose(
 )
 
 class Trainer:
-    def __init__(self, out_dim):
-
+    def __init__(self, out_dim, pretrained=None):
         self.model = models.resnet18(pretrained=False, num_classes=out_dim)
+        if pretrained:
+            self.model.load_state_dict(torch.load('pretrained_model.pt'), strict=False)
         self.model.to('cuda:0')
         self.loss = nn.CrossEntropyLoss()
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
