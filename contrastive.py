@@ -95,9 +95,7 @@ class SimCLR(object):
 
         for epoch_counter in range(100):
             for images, _ in tqdm(train_loader):
-                images, labels = torch.cat(images, dim=0)
-
-                images = images.to('cuda:0')
+                images = torch.cat(images, dim=0).to('cuda:0')
 
                 features = self.model(images)
                 logits, labels = self.info_nce_loss(features)
