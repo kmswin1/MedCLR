@@ -6,7 +6,7 @@ from exceptions.exceptions import InvalidBackboneError
 
 class ResNetSimCLR(nn.Module):
 
-    def __init__(self, base_model, out_dim):
+    def __init__(self, out_dim):
         super(ResNetSimCLR, self).__init__()
         models.resnet18(pretrained=False, num_classes=out_dim)
         dim_mlp = self.backbone.fc.in_features
