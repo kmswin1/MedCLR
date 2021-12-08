@@ -103,3 +103,6 @@ if __name__ == '__main__':
                 if accuracy > optimal_accuracy:
                     torch.save(trainer.model.state_dict(), 'model.pt')
                     break
+                
+                
+""" Experiments """
